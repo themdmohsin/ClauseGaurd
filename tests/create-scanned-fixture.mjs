@@ -1,0 +1,15 @@
+import { createCanvas } from "@napi-rs/canvas";
+import { mkdirSync, writeFileSync } from "node:fs";
+mkdirSync("work/fixtures",{recursive:true});
+const canvas=createCanvas(1224,1584),context=canvas.getContext("2d");
+context.fillStyle="white";context.fillRect(0,0,canvas.width,canvas.height);context.fillStyle="#111";context.font="bold 34px Arial";
+context.fillText("SAMPLE FREELANCE AGREEMENT",90,120);context.font="25px Arial";
+const lines=["This fictional scan is for testing ClauseGuard OCR.","Client: BrightPath Studio. Contractor: Alex Morgan.","", "1. The project fee is INR 40,000.","2. The Client will pay within 90 days after delivery.","3. The Client may cancel at any time without notice.","4. On cancellation, all payments must be refunded,", "including payment for completed work.","5. Both parties will protect confidential information.","6. Changes require written agreement by both parties."];
+lines.forEach((line,i)=>context.fillText(line,90,200+i*48));
+const image=canvas.toBuffer("image/jpeg");
+const stream=Buffer.from("q 612 0 0 792 0 0 cm /Scan Do Q");
+const objects=[Buffer.from("<< /Type /Catalog /Pages 2 0 R >>"),Buffer.from("<< /Type /Pages /Kids [3 0 R] /Count 1 >>"),Buffer.from("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Scan 4 0 R >> >> /Contents 5 0 R >>"),Buffer.concat([Buffer.from(`<< /Type /XObject /Subtype /Image /Width 1224 /Height 1584 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${image.length} >>\nstream\n`),image,Buffer.from("\nendstream")]),Buffer.concat([Buffer.from(`<< /Length ${stream.length} >>\nstream\n`),stream,Buffer.from("\nendstream")])];
+let data=Buffer.from("%PDF-1.4\n");const offsets=[0];objects.forEach((object,i)=>{offsets.push(data.length);data=Buffer.concat([data,Buffer.from(`${i+1} 0 obj\n`),object,Buffer.from("\nendobj\n")]);});
+const xref=data.length;data=Buffer.concat([data,Buffer.from(`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`+offsets.slice(1).map(n=>`${String(n).padStart(10,"0")} 00000 n \n`).join("")+`trailer\n<< /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`)]);
+writeFileSync("work/fixtures/scanned-agreement.pdf",data);
+console.log("Created a fictional image-only PDF for browser OCR verification.");

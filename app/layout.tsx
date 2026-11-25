@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./clauseguard.css";
+import "./tools.css";
 
 export const metadata: Metadata = {
   title: "ClauseGuard — Read between the lines",

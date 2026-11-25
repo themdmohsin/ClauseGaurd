@@ -41,6 +41,7 @@ yarn-error.log*
 /.codex/
 /outputs/
 /public/pdf.worker-*.min.mjs
+/public/ocr/
 /work/
 
 # OS metadata
