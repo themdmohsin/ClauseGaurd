@@ -42,3 +42,11 @@ test("chat requires agreement consent and caps conversation context",()=>{
   assert.equal(chatRequestSchema.safeParse({...input,agreement:{...agreement,consent:false}}).success,false);
   assert.equal(chatRequestSchema.safeParse({...input,history:Array.from({length:5},()=>({role:"user",content:"a".repeat(9000)}))}).success,false);
 });
+test("chat withholds invented or miscalculated currency totals",()=>{
+  const answer={answer:"The fee is INR 60,000, the deposit is INR 18,000, and the remaining balance is INR 54,000.",citations:[{page:1,quote:DEMO_RESULT.report.findings[0].quote}],followUpQuestions:[]};
+  const checked=verifyCitations(answer,DEMO_PAGES);
+  assert.doesNotMatch(checked.answer,/54,000/);
+  assert.match(checked.warnings.join(" "),/withheld/);
+  const supported=verifyCitations({...answer,answer:"The stated fee is INR 60000 and the deposit is 30%."},DEMO_PAGES);
+  assert.equal(supported.answer,"The stated fee is INR 60000 and the deposit is 30%.");
+});
