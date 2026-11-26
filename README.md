@@ -78,3 +78,5 @@ Recognised pages must be reviewed and confirmed before analysis. Users can corre
 Representative evaluation across agreement types remains necessary. Track material risk recall, false positives on balanced terms, quotation accuracy, cross-clause reasoning, role sensitivity, revision fairness and resistance to embedded document instructions. Deterministic tests do not establish legal or model accuracy. Live smoke checks exercise original-document chat, verified clause revisions, and proposed-draft chat with fictional contracts; these checks do not constitute a legal audit.
 
 Official API references: https://platform.claude.com/docs/en/build-with-claude/structured-outputs and https://platform.claude.com/docs/en/about-claude/models/overview
+#   C l a u s e G a u r d  
+ 
